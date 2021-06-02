@@ -1,0 +1,28 @@
+#!/bin/sh
+
+
+file="$(ls -a | fzf -m -e --cycle --layout=reverse-list --border --no-info --prompt=">_ " --pointer="🎃" --marker="🕸️"  --header="🍁Fuzzy Surfer"  --preview='prv {}' --height 70 --bind=ctrl-l:accept,ctrl-w:toggle-preview)"
+
+
+handle() {
+	if [ -f "$file" ];
+	then
+		xdg-open "$file"
+	elif [ -d "$file" ];
+	then
+		cd "$file" && "$0"
+	fi
+}
+
+case "$file" in
+    *.png|*.jpg|*.jpeg) sxiv "$file";;
+    *.md) emacs -nw "$file";;
+    *.pdf) zathura "$file";;
+    *.zip|*.tar|*.tar.gz|*.tar.bz2|*.rar|*.7z|*.tar.xz|*.lzma|*.bz2|*.rar|*.gz|*.Z|*.xz|*.exe) ext "$file";;
+    *.html|*.xml) w3m -dump "$file";;
+    .zsh*|*.bash*|*.git*) nvim "$file";;
+    *.docx) libreoffice "$file";;
+    *.odt) libreoffice "$file";;
+    *.csv|*.xlsx) sc-im	"$file";;
+    *) handle "$file" ;;
+esac
